@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Nomina.Entities
 {
@@ -11,6 +12,7 @@ namespace Nomina.Entities
         }
 
         public int Id { get; set; }
+        [Display(Name = "Puesto")]
         public string Nombre { get; set; }
         public string NivelRiesgo { get; set; }
         public decimal? NivelMinimoSalario { get; set; }

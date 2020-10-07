@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Nomina.Entities.Empleados>
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Lista de Empleados</h1>
+<hr />
+<p>
+    <a asp-action="Create" class="btn btn-primary active" role="button" aria-pressed="true">Crear nuevo Empleado</a>
+</p>
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cedula)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdDepartamentoNavigation.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdPuestoNavigation.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SalarioMensual)
+            </th>
+            <th>
+                Acciones
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">@Html.DisplayFor(modelItem => item.Id)</th>
+                <td>@Html.DisplayFor(modelItem => item.Cedula)</td>
+                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdDepartamentoNavigation.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdPuestoNavigation.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.SalarioMensual)</td>
+
+                <td>
+                    <div class="dropdown">
+                        <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Accion
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id">Detalle</a>
+                            <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                            <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
