@@ -1,27 +1,28 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nomina.Data;
 using Nomina.Entities;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Nomina.Controllers
 {
     [Authorize]
-    public class DepartamentosController : Controller
+    public class TiposDeduccionesController: Controller
     {
         private readonly PayrollSystemDbContext _payrollSystemDbContext;
-        public DepartamentosController(PayrollSystemDbContext payrollSystemDbContext)
+
+        public TiposDeduccionesController(PayrollSystemDbContext payrollSystemDbContext)
         {
             _payrollSystemDbContext = payrollSystemDbContext;
         }
 
         public IActionResult Index()
         {
-            var departamentosList = _payrollSystemDbContext.Departamentos.ToList();
+            var tiposDeducciones = _payrollSystemDbContext.TiposDeducciones.ToList();
 
-            return View(departamentosList);
+            return View(tiposDeducciones);
         }
 
         public IActionResult Create()
@@ -31,39 +32,39 @@ namespace Nomina.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, Nombre, UbicacionFisica")] Departamentos departamento)
+        public async Task<IActionResult> Create([Bind("Id, Nombre, DependeSalario, Estado")] TiposDeducciones tipoDeduccion)
         {
             if (ModelState.IsValid)
             {
-                _payrollSystemDbContext.Departamentos.Add(departamento);
+                _payrollSystemDbContext.TiposDeducciones.Add(tipoDeduccion);
                 await _payrollSystemDbContext.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(departamento);
+            return View(tipoDeduccion);
         }
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
                 return NotFound();
 
-            var departamento = await _payrollSystemDbContext.Departamentos
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var tipoDeduccion = await _payrollSystemDbContext.TiposDeducciones
+                                                            .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (departamento == null)
+            if (tipoDeduccion == null)
                 return NotFound();
 
-            return View(departamento);
+            return View(tipoDeduccion);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var departamento = await _payrollSystemDbContext.Departamentos.FindAsync(id);
+            var tipoDeduccion = await _payrollSystemDbContext.TiposDeducciones.FindAsync(id);
 
-            _payrollSystemDbContext.Departamentos.Remove(departamento);
+            _payrollSystemDbContext.TiposDeducciones.Remove(tipoDeduccion);
             await _payrollSystemDbContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
@@ -74,14 +75,14 @@ namespace Nomina.Controllers
             if (id == null)
                 return NotFound();
 
-            var departamento = await _payrollSystemDbContext.Departamentos
+            var tipoDeduccion = await _payrollSystemDbContext.TiposDeducciones
                                                             .Where(d => d.Id == id)
                                                             .FirstOrDefaultAsync();
 
-            if (departamento == null)
+            if (tipoDeduccion == null)
                 return NotFound();
 
-            return View(departamento);
+            return View(tipoDeduccion);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -89,19 +90,19 @@ namespace Nomina.Controllers
             if (id == null)
                 return NotFound();
 
-            var departamento = await _payrollSystemDbContext.Departamentos.FindAsync(id);
+            var tipoDeduccion = await _payrollSystemDbContext.TiposDeducciones.FindAsync(id);
 
-            if (departamento == null)
+            if (tipoDeduccion == null)
                 return NotFound();
 
-            return View(departamento);
+            return View(tipoDeduccion);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("Id, Nombre, UbicacionFisica")] Departamentos departamento)
+        public async Task<IActionResult> Edit(int? id, [Bind("Id, Nombre, DependeSalario, Estado")] TiposDeducciones tipoDeduccion)
         {
-            if (id != departamento.Id)
+            if (id != tipoDeduccion.Id)
             {
                 return NotFound();
             }
@@ -110,12 +111,12 @@ namespace Nomina.Controllers
             {
                 try
                 {
-                    _payrollSystemDbContext.Update(departamento);
+                    _payrollSystemDbContext.Update(tipoDeduccion);
                     await _payrollSystemDbContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DepartamentoExists(departamento.Id))
+                    if (!TiposDeduccionesExists(tipoDeduccion.Id))
                     {
                         return NotFound();
                     }
@@ -126,11 +127,11 @@ namespace Nomina.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(departamento);
+            return View(tipoDeduccion);
         }
-        private bool DepartamentoExists(int id)
+        private bool TiposDeduccionesExists(int id)
         {
-            return _payrollSystemDbContext.Departamentos.Any(e => e.Id == id);
+            return _payrollSystemDbContext.TiposDeducciones.Any(e => e.Id == id);
         }
     }
 }

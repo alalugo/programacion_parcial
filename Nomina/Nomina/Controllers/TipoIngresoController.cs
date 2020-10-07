@@ -1,27 +1,30 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nomina.Data;
 using Nomina.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Nomina.Controllers
 {
     [Authorize]
-    public class DepartamentosController : Controller
+    public class TipoIngresoController: Controller
     {
         private readonly PayrollSystemDbContext _payrollSystemDbContext;
-        public DepartamentosController(PayrollSystemDbContext payrollSystemDbContext)
+
+        public TipoIngresoController(PayrollSystemDbContext payrollSystemDbContext)
         {
             _payrollSystemDbContext = payrollSystemDbContext;
         }
 
         public IActionResult Index()
         {
-            var departamentosList = _payrollSystemDbContext.Departamentos.ToList();
+            var tiposIngresos = _payrollSystemDbContext.TipoIngreso.ToList();
 
-            return View(departamentosList);
+            return View(tiposIngresos);
         }
 
         public IActionResult Create()
@@ -31,39 +34,39 @@ namespace Nomina.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, Nombre, UbicacionFisica")] Departamentos departamento)
+        public async Task<IActionResult> Create([Bind("Id, Nombre, DependeSalario, Estado")] TipoIngreso tipoIngreso)
         {
             if (ModelState.IsValid)
             {
-                _payrollSystemDbContext.Departamentos.Add(departamento);
+                _payrollSystemDbContext.TipoIngreso.Add(tipoIngreso);
                 await _payrollSystemDbContext.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(departamento);
+            return View(tipoIngreso);
         }
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
                 return NotFound();
 
-            var departamento = await _payrollSystemDbContext.Departamentos
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var tipoIngreso = await _payrollSystemDbContext.TipoIngreso
+                                                            .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (departamento == null)
+            if (tipoIngreso == null)
                 return NotFound();
 
-            return View(departamento);
+            return View(tipoIngreso);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var departamento = await _payrollSystemDbContext.Departamentos.FindAsync(id);
+            var tipoIngreso = await _payrollSystemDbContext.TipoIngreso.FindAsync(id);
 
-            _payrollSystemDbContext.Departamentos.Remove(departamento);
+            _payrollSystemDbContext.TipoIngreso.Remove(tipoIngreso);
             await _payrollSystemDbContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
@@ -74,14 +77,14 @@ namespace Nomina.Controllers
             if (id == null)
                 return NotFound();
 
-            var departamento = await _payrollSystemDbContext.Departamentos
+            var tipoIngreso = await _payrollSystemDbContext.TipoIngreso
                                                             .Where(d => d.Id == id)
                                                             .FirstOrDefaultAsync();
 
-            if (departamento == null)
+            if (tipoIngreso == null)
                 return NotFound();
 
-            return View(departamento);
+            return View(tipoIngreso);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -89,19 +92,19 @@ namespace Nomina.Controllers
             if (id == null)
                 return NotFound();
 
-            var departamento = await _payrollSystemDbContext.Departamentos.FindAsync(id);
+            var tipoIngreso = await _payrollSystemDbContext.TipoIngreso.FindAsync(id);
 
-            if (departamento == null)
+            if (tipoIngreso == null)
                 return NotFound();
 
-            return View(departamento);
+            return View(tipoIngreso);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("Id, Nombre, UbicacionFisica")] Departamentos departamento)
+        public async Task<IActionResult> Edit(int? id, [Bind("Id, Nombre, DependeSalario, Estado")] TipoIngreso tipoIngreso)
         {
-            if (id != departamento.Id)
+            if (id != tipoIngreso.Id)
             {
                 return NotFound();
             }
@@ -110,12 +113,12 @@ namespace Nomina.Controllers
             {
                 try
                 {
-                    _payrollSystemDbContext.Update(departamento);
+                    _payrollSystemDbContext.Update(tipoIngreso);
                     await _payrollSystemDbContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DepartamentoExists(departamento.Id))
+                    if (!TipoIngresoExists(tipoIngreso.Id))
                     {
                         return NotFound();
                     }
@@ -126,11 +129,11 @@ namespace Nomina.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(departamento);
+            return View(tipoIngreso);
         }
-        private bool DepartamentoExists(int id)
+        private bool TipoIngresoExists(int id)
         {
-            return _payrollSystemDbContext.Departamentos.Any(e => e.Id == id);
+            return _payrollSystemDbContext.TipoIngreso.Any(e => e.Id == id);
         }
     }
 }

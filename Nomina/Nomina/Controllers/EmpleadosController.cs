@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nomina.Data;
 using Nomina.Entities;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Nomina.Controllers
 {
+    [Authorize]
     public class EmpleadosController: Controller
     {
         private readonly PayrollSystemDbContext _payrollSystemDbContext;

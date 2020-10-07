@@ -5,13 +5,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
-
+<h1>Lista de Puestos</h1>
+<hr />
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary active" role="button" aria-pressed="true">Crear nuevo Puesto</a>
 </p>
 <table class="table">
-    <thead>
+    <thead class="thead-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Nombre)
@@ -29,26 +29,34 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NivelRiesgo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NivelMinimoSalario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NivelMaximoSalario)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NivelRiesgo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NivelMinimoSalario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NivelMaximoSalario)
+                </td>
+                <td>
+                    <div class="dropdown">
+                        <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Accion
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id">Detalle</a>
+                            <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                            <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
