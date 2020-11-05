@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Nomina.Data;
 using Nomina.Entities;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Nomina.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Recruiter")]
     public class EmpleadosController: Controller
     {
         private readonly PayrollSystemDbContext _payrollSystemDbContext;
@@ -21,21 +22,60 @@ namespace Nomina.Controllers
             _payrollSystemDbContext = payrollSystemDbContext;
         }
 
-        public IActionResult Index()
+        public IActionResult Index([Bind("SelectedFilter, TextFilter")] IndexEmpleadosModel indexEmpleadosModel)
         {
-            var empleados = _payrollSystemDbContext.Empleados.Include(d => d.IdDepartamentoNavigation)
-                                                             .Include(p => p.IdPuestoNavigation)
-                                                             .ToList();
+            var empleados = new List<Empleados>();
 
-            return View(empleados);
+            if (!string.IsNullOrEmpty(indexEmpleadosModel.TextFilter))
+            {
+                switch (indexEmpleadosModel.SelectedFilter)
+                {
+                    case "name":
+                        empleados = _payrollSystemDbContext.Empleados.Where(x => x.Nombre.Contains(indexEmpleadosModel.TextFilter))
+                                                                     .Include(d => d.IdDepartamentoNavigation)
+                                                                     .Include(p => p.IdPuestoNavigation)
+                                                                     .ToList();
+                        break;
+                    case "identification":
+                        empleados = _payrollSystemDbContext.Empleados.Where(x => x.Cedula.StartsWith(indexEmpleadosModel.TextFilter))
+                                                                     .Include(d => d.IdDepartamentoNavigation)
+                                                                     .Include(p => p.IdPuestoNavigation)
+                                                                     .ToList();
+                        break;
+                    default:
+                        empleados = _payrollSystemDbContext.Empleados.Include(d => d.IdDepartamentoNavigation)
+                                                                     .Include(p => p.IdPuestoNavigation)
+                                                                     .ToList();
+                        break;
+                } 
+            }
+            else
+            {
+                empleados = _payrollSystemDbContext.Empleados.Include(d => d.IdDepartamentoNavigation)
+                                                                     .Include(p => p.IdPuestoNavigation)
+                                                                     .ToList();
+            }
+
+            var indexEmpleados = new IndexEmpleadosModel
+            {
+                Empleados = empleados,
+                Filter = new List<SelectListItem> 
+                { 
+                    new SelectListItem { Value = "name", Text = "Nombre" },
+                    new SelectListItem { Value = "identification", Text = "Cedula" } 
+                }
+            };
+
+            return View(indexEmpleados);
         }
 
         public async Task<IActionResult> Create()
         {
-            var createEmpleadoModel = new CreateEmpleadoModel();
-
-            createEmpleadoModel.Departamentos = await _payrollSystemDbContext.Departamentos.ToListAsync();
-            createEmpleadoModel.Puestos = await _payrollSystemDbContext.Puestos.ToListAsync();
+            var createEmpleadoModel = new CreateEmpleadoModel
+            {
+                Departamentos = await _payrollSystemDbContext.Departamentos.ToListAsync(),
+                Puestos = await _payrollSystemDbContext.Puestos.ToListAsync()
+            };
 
             return View(createEmpleadoModel);
         }
@@ -44,13 +84,14 @@ namespace Nomina.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id, Cedula, Nombre, IdDepartamento, IdPuesto, SalarioMensual")] CreateEmpleadoModel createEmpleadoModel)
         {
-            var empleado = new Empleados();
-
-            empleado.Cedula = createEmpleadoModel.Cedula;
-            empleado.Nombre = createEmpleadoModel.Nombre;
-            empleado.IdDepartamento = createEmpleadoModel.IdDepartamento;
-            empleado.IdPuesto = createEmpleadoModel.IdPuesto;
-            empleado.SalarioMensual = createEmpleadoModel.SalarioMensual;
+            var empleado = new Empleados
+            {
+                Cedula = createEmpleadoModel.Cedula,
+                Nombre = createEmpleadoModel.Nombre,
+                IdDepartamento = createEmpleadoModel.IdDepartamento,
+                IdPuesto = createEmpleadoModel.IdPuesto,
+                SalarioMensual = createEmpleadoModel.SalarioMensual
+            };
 
             if (ModelState.IsValid)
             {
@@ -59,6 +100,9 @@ namespace Nomina.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+
+            createEmpleadoModel.Departamentos = await _payrollSystemDbContext.Departamentos.ToListAsync();
+            createEmpleadoModel.Puestos = await _payrollSystemDbContext.Puestos.ToListAsync();
 
             return View(createEmpleadoModel);
         }
@@ -119,16 +163,17 @@ namespace Nomina.Controllers
             if (empleado == null)
                 return NotFound();
 
-            var editEmpleadoModel = new EditEmpleadoModel();
-
-            editEmpleadoModel.Id = empleado.Id;
-            editEmpleadoModel.Cedula = empleado.Cedula;
-            editEmpleadoModel.Nombre = empleado.Nombre;
-            editEmpleadoModel.IdDepartamento = empleado.IdDepartamento;
-            editEmpleadoModel.IdPuesto = empleado.IdPuesto;
-            editEmpleadoModel.SalarioMensual = empleado.SalarioMensual;
-            editEmpleadoModel.Departamentos = _payrollSystemDbContext.Departamentos.ToList();
-            editEmpleadoModel.Puestos = _payrollSystemDbContext.Puestos.ToList();
+            var editEmpleadoModel = new EditEmpleadoModel
+            {
+                Id = empleado.Id,
+                Cedula = empleado.Cedula,
+                Nombre = empleado.Nombre,
+                IdDepartamento = empleado.IdDepartamento,
+                IdPuesto = empleado.IdPuesto,
+                SalarioMensual = empleado.SalarioMensual,
+                Departamentos = _payrollSystemDbContext.Departamentos.ToList(),
+                Puestos = _payrollSystemDbContext.Puestos.ToList()
+            };
 
             return View(editEmpleadoModel);
         }
@@ -146,14 +191,15 @@ namespace Nomina.Controllers
             {
                 try
                 {
-                    var empleado = new Empleados();
-
-                    empleado.Id = editEmpleadoModel.Id;
-                    empleado.Cedula = editEmpleadoModel.Cedula;
-                    empleado.Nombre = editEmpleadoModel.Nombre;
-                    empleado.IdDepartamento = editEmpleadoModel.IdDepartamento;
-                    empleado.IdPuesto = editEmpleadoModel.IdPuesto;
-                    empleado.SalarioMensual = editEmpleadoModel.SalarioMensual;
+                    var empleado = new Empleados
+                    {
+                        Id = editEmpleadoModel.Id,
+                        Cedula = editEmpleadoModel.Cedula,
+                        Nombre = editEmpleadoModel.Nombre,
+                        IdDepartamento = editEmpleadoModel.IdDepartamento,
+                        IdPuesto = editEmpleadoModel.IdPuesto,
+                        SalarioMensual = editEmpleadoModel.SalarioMensual
+                    };
 
 
                     _payrollSystemDbContext.Update(empleado);

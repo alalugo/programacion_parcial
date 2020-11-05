@@ -11,7 +11,7 @@ using Nomina.Entities;
 
 namespace Nomina.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Recruiter")]
     public class PuestosController : Controller
     {
         private readonly PayrollSystemDbContext _context;

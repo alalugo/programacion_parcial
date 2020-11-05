@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Nomina.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Recruiter")]
     public class TiposDeduccionesController: Controller
     {
         private readonly PayrollSystemDbContext _payrollSystemDbContext;

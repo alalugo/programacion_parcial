@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Nomina.Entities.Empleados>
+﻿@model IndexEmpleadosModel
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,26 +9,44 @@
     <a asp-action="Create" class="btn btn-primary active" role="button" aria-pressed="true">Crear nuevo Empleado</a>
 </p>
 
+<br />
+<form asp-action="Index">
+    <div class="form-group">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <select class="form-control" asp-for="SelectedFilter" asp-items="Model.Filter">
+                </select>
+            </div>
+            <input type="text" asp-for="TextFilter" class="form-control col-md-6" aria-label="Text input with dropdown button">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit" id="button-addon2">Buscar</button>
+            </div>
+        </div>
+
+    </div>
+</form>
+<br />
+
 <table class="table">
     <thead class="thead-dark">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                @Html.DisplayNameFor(model => model.Empleados.First().Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Cedula)
+                @Html.DisplayNameFor(model => model.Empleados.First().Cedula)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Nombre)
+                @Html.DisplayNameFor(model => model.Empleados.First().Nombre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdDepartamentoNavigation.Nombre)
+                @Html.DisplayNameFor(model => model.Empleados.First().IdDepartamentoNavigation.Nombre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdPuestoNavigation.Nombre)
+                @Html.DisplayNameFor(model => model.Empleados.First().IdPuestoNavigation.Nombre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SalarioMensual)
+                @Html.DisplayNameFor(model => model.Empleados.First().SalarioMensual)
             </th>
             <th>
                 Acciones
@@ -36,7 +54,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Empleados)
         {
             <tr>
                 <th scope="row">@Html.DisplayFor(modelItem => item.Id)</th>
@@ -60,5 +78,13 @@
                 </td>
             </tr>
         }
+
+        @if (!Model.Empleados.Any())
+        {
+            <tr>
+                <td colspan="7" align="center" style="color: darkblue; font-size:18px">No se encontraron registros</td>
+            </tr>
+        }
+
     </tbody>
 </table>

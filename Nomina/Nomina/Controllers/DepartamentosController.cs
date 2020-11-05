@@ -8,7 +8,7 @@ using Nomina.Entities;
 
 namespace Nomina.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Recruiter")]
     public class DepartamentosController : Controller
     {
         private readonly PayrollSystemDbContext _payrollSystemDbContext;
