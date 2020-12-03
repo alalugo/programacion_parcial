@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Nomina.Controllers
@@ -67,6 +68,24 @@ namespace Nomina.Controllers
             };
 
             return View(indexEmpleados);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ImportExcel()
+        {
+            var data = await _payrollSystemDbContext.Empleados.Include(d => d.IdDepartamentoNavigation)
+                                                              .Include(p => p.IdPuestoNavigation)
+                                                              .ToListAsync();
+            var fileBuilder = new StringBuilder();
+
+            fileBuilder.AppendLine("CODIGO,CEDULA,NOMBRE,DEPARTAMENTO,PUESTO,SALARIO");
+
+            foreach (var item in data)
+            {
+                fileBuilder.AppendLine($"{item.Id},\"{item.Cedula}\",{item.Nombre},{item.IdDepartamentoNavigation.Nombre},{item.IdPuestoNavigation.Nombre},\"{item.SalarioMensual}\"");
+            }
+
+            return File(Encoding.UTF8.GetBytes(fileBuilder.ToString()), "text/csv", "Empleados.csv");
         }
 
         public async Task<IActionResult> Create()

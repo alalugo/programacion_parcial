@@ -11,7 +11,7 @@ namespace Nomina.Entities
         public string Nombre { get; set; }
         [Display(Name = "Depende Salario")]
         [Required(ErrorMessage = "Este campo es obligatorio")]
-        public string DependeSalario { get; set; }
+        public decimal DependeSalario { get; set; }
         [Required(ErrorMessage = "Este campo es obligatorio")]
         public string Estado { get; set; }
     }
