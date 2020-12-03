@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Nomina.Entities.Transacciones>
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Lista de Transacciones</h1>
+<hr />
+
+
+<div class="row">
+    <div class="col-8">
+        <p>
+            <a asp-action="PagarNomina" class="btn btn-primary active" role="button" aria-pressed="true">Pagar Nomina</a>
+        </p>
+    </div>
+    <div class="col-4">
+        <p>
+            <a asp-action="ImportExcel" class="btn btn-success active" role="button" aria-pressed="true">Importar a Excel</a>
+        </p>
+    </div>
+</div>
+
+<hr />
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCustomerNavigation.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCustomerNavigation.SalarioMensual)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Monto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaTransaccion)
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">@Html.DisplayFor(modelItem => item.Id)</th>
+                <td>@Html.DisplayFor(modelItem => item.IdCustomerNavigation.Nombre)</td>
+                <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                <td>@Html.DisplayFor(modelItem => item.IdCustomerNavigation.SalarioMensual)</td>
+                <td>@Html.DisplayFor(modelItem => item.Monto)</td>
+                <td>@Html.DisplayFor(modelItem => item.FechaTransaccion)</td>
+            </tr>
+        }
+
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="7" align="center" style="color: darkblue; font-size:18px">No se encontraron registros</td>
+            </tr>
+        }
+
+    </tbody>
+</table>

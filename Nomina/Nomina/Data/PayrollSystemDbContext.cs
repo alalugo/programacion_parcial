@@ -21,6 +21,8 @@ namespace Nomina.Data
         public virtual DbSet<Puestos> Puestos { get; set; }
         public virtual DbSet<TipoIngreso> TipoIngreso { get; set; }
         public virtual DbSet<TiposDeducciones> TiposDeducciones { get; set; }
+        public virtual DbSet<Transacciones> Transacciones { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -102,10 +104,7 @@ namespace Nomina.Data
 
             modelBuilder.Entity<TiposDeducciones>(entity =>
             {
-                entity.Property(e => e.DependeSalario)
-                    .IsRequired()
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
+                entity.Property(e => e.DependeSalario).HasColumnType("money");
 
                 entity.Property(e => e.Estado)
                     .HasMaxLength(100)
@@ -115,6 +114,26 @@ namespace Nomina.Data
                     .IsRequired()
                     .HasMaxLength(200)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Porcentaje).HasColumnType("decimal(18, 0)");
+            });
+
+            modelBuilder.Entity<Transacciones>(entity =>
+            {
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FechaTransaccion).HasColumnType("datetime");
+
+                entity.Property(e => e.Monto).HasColumnType("money");
+
+                entity.HasOne(d => d.IdCustomerNavigation)
+                    .WithMany(p => p.Transacciones)
+                    .HasForeignKey(d => d.IdCustomer)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Transacci__IdCus__3B75D760");
             });
 
             OnModelCreatingPartial(modelBuilder);

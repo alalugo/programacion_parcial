@@ -13,6 +13,8 @@ namespace Nomina.Entities
         [Required(ErrorMessage = "Este campo es obligatorio")]
         public decimal DependeSalario { get; set; }
         [Required(ErrorMessage = "Este campo es obligatorio")]
+        public decimal? Porcentaje { get; set; }
+        [Required(ErrorMessage = "Este campo es obligatorio")]
         public string Estado { get; set; }
     }
 }

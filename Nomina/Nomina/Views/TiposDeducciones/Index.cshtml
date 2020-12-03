@@ -19,6 +19,9 @@
                 @Html.DisplayNameFor(model => model.DependeSalario)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Porcentaje)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Estado)
             </th>
             <th>
@@ -33,6 +36,7 @@
             <th scope="row">@Html.DisplayFor(modelItem => item.Id)</th>
             <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
             <td>@Html.DisplayFor(modelItem => item.DependeSalario)</td>
+            <td>@Html.DisplayFor(modelItem => item.Porcentaje)</td>
             <td>@Html.DisplayFor(modelItem => item.Estado)</td>
             <td>
                 <div class="dropdown">

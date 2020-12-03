@@ -7,6 +7,11 @@ namespace Nomina.Entities
 {
     public partial class Empleados
     {
+        public Empleados()
+        {
+            Transacciones = new HashSet<Transacciones>();
+        }
+
         public int Id { get; set; }
         [Required(ErrorMessage = "La cedula es obligatoria")]
         [ValidateIdentification]
@@ -26,5 +31,6 @@ namespace Nomina.Entities
 
         public virtual Departamentos IdDepartamentoNavigation { get; set; }
         public virtual Puestos IdPuestoNavigation { get; set; }
+        public virtual ICollection<Transacciones> Transacciones { get; set; }
     }
 }

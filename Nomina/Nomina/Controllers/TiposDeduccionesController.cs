@@ -32,7 +32,7 @@ namespace Nomina.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, Nombre, DependeSalario, Estado")] TiposDeducciones tipoDeduccion)
+        public async Task<IActionResult> Create([Bind("Id, Nombre, DependeSalario, Porcentaje, Estado")] TiposDeducciones tipoDeduccion)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +100,7 @@ namespace Nomina.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("Id, Nombre, DependeSalario, Estado")] TiposDeducciones tipoDeduccion)
+        public async Task<IActionResult> Edit(int? id, [Bind("Id, Nombre, DependeSalario, Porcentaje, Estado")] TiposDeducciones tipoDeduccion)
         {
             if (id != tipoDeduccion.Id)
             {
